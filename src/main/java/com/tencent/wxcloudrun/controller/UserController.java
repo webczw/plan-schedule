@@ -10,10 +10,7 @@ import com.tencent.wxcloudrun.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -21,8 +18,8 @@ import java.util.Optional;
  * counter控制器
  */
 
-@RestController("/user/api")
-
+@RestController
+@RequestMapping(value = "/user/api")
 public class UserController {
 
   final UserService userService;
