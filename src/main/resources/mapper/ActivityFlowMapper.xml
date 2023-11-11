@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tencent.wxcloudrun.dao.ActivityFlowMapper">
+
+    <resultMap id="resultMap" type="com.tencent.wxcloudrun.model.ActivityFlow">
+        <id property="activityFlowId" column="activity_flow_id"/>
+        <result property="activityFlowCode" column="activity_flow_code"/>
+        <result property="activityFlowName" column="activity_flow_name"/>
+        <result property="activityFlowDescription" column="activity_flow_description"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createDate" column="create_date" javaType="java.time.LocalDateTime"/>
+        <result property="lastUpdateBy" column="last_update_by"/>
+        <result property="lastUpdateDate" column="last_update_date" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="activityFlowId"
+            parameterType="com.tencent.wxcloudrun.model.ActivityFlow">
+        insert into ps_activity_flow_t(activity_flow_code,
+                                       activity_flow_name,
+                                       activity_flow_description,
+                                       delete_flag,
+                                       create_by,
+                                       create_date,
+                                       last_update_by,
+                                       last_update_date)
+        values (#{activityFlowCode},
+                #{activityFlowName},
+                #{activityFlowDescription},
+                'N',
+                #{createBy},
+                now(),
+                #{createBy},
+                now())
+    </insert>
+
+    <select id="findCreateBy" resultMap="resultMap" parameterType="java.lang.String">
+        SELECT activity_flow_id,
+               activity_flow_code,
+               activity_flow_name,
+               activity_flow_description,
+               create_by,
+               create_date,
+               last_update_by,
+               last_update_date
+        FROM ps_activity_flow_t
+        WHERE delete_flag = 'N'
+          and create_by = #{createBy}
+    </select>
+
+    <update id="update" parameterType="com.tencent.wxcloudrun.model.ActivityFlow">
+        update ps_activity_flow_t
+        set activity_flow_name        = #{activityFlowName},
+            activity_flow_description = #{activityFlowDescription},
+            last_update_date          = now(),
+            last_update_by            = #{lastUpdateBy}
+        where delete_flag = 'N'
+          and activity_flow_id = #{activityFlowId}
+    </update>
+
+    <delete id="delete" parameterType="com.tencent.wxcloudrun.model.ActivityFlow">
+        update ps_activity_flow_t
+        set delete_flag      = 'Y',
+            last_update_date = now(),
+            last_update_by   = #{lastUpdateBy}
+        where delete_flag = 'N'
+          and activity_flow_id = #{activityFlowId}
+    </delete>
+
+    <select id="findByCode" resultType="integer">
+        select count(1) from ps_activity_flow_t where activity_flow_code like CONCAT(#{codePrefix},'%');
+    </select>
+
+</mapper>
